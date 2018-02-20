@@ -18,11 +18,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests().anyRequest().authenticated();
-        http
-                .formLogin().failureUrl("/login?error")
+                .authorizeRequests()
+                .antMatchers("/","/login","/books/list","/books/add","/books/edit/**","/books/delete/**").permitAll()
+                .antMatchers("/books/add","/books/edit/**","/books/delete/**").hasAuthority("USER")
+                .anyRequest().authenticated()
+                .and()
+                .formLogin().loginPage("/login")
                 .defaultSuccessUrl("/")
-                .loginPage("/login")
+                .failureUrl("/login?error")
                 .permitAll()
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login")
@@ -31,6 +34,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication().withUser("user").password("password").roles("USER");
+        auth.inMemoryAuthentication().withUser("user").password("password").authorities("USER");
     }
 }

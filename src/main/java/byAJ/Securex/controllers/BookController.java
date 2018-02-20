@@ -35,14 +35,12 @@ public class BookController {
     }
     @RequestMapping("/edit/{id}")
     public String editBook(@PathVariable("id")int bookid, Model model){
-        Book book = new Book();
-        book = bookRepository.findOne(bookid);
-        model.addAttribute("book", book);
+                model.addAttribute("book", bookRepository.findOne(bookid));
         return "bookform";
     }
     @RequestMapping("/delete/{id}")
     public String deleteBook(@PathVariable("id")int bookid){
         bookRepository.delete(bookid);
-        return "listbooks";
+        return "redirect:/books/list";
     }
 }
